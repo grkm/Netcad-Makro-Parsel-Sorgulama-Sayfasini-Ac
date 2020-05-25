@@ -1,6 +1,6 @@
-'Netcad üzerinde tıklanan herhangi bir noktayı parselsorgulama sistemi üzerinden sorgular ve ilgili ada/parseli açar
-'30.03.2020 "Covid-19 Zamanları"
-'Salih Görkem TABAK - Jeodezi ve Fotogrametri Mühendisi
+'Netcad Ã¼zerinde tÄ±klanan herhangi bir noktayÄ± parselsorgulama sistemi Ã¼zerinden sorgular ve ilgili ada/parseli aÃ§ar
+'30.03.2020 "Covid-19 ZamanlarÄ±"
+'Salih GÃ¶rkem TABAK - Jeodezi ve Fotogrametri MÃ¼hendisi
 'gorkemtabak@gmail.com
 'https://gorkemtabak.blogspot.com
 'https://github.com/grkm
@@ -20,22 +20,22 @@ dim secim
 
 with Netcad
 
-'Kullanıcıdan koordinat sistemi ve DOM bilgisini alır
+'KullanÄ±cÄ±dan koordinat sistemi ve DOM bilgisini alÄ±r
 'DOM 27 - 30 - 33 - 36 - 39 - 42 - 45
 'Koordinat ITRF96 - ED50
 'Dilim 3 Derece - 6 Derece
-set secim = Netcad.NewBDialog("Parsel Sorgulama Sayfasında Ara")
+set secim = Netcad.NewBDialog("Parsel Sorgulama SayfasÄ±nda Ara")
 secim.Getcombo "dilim","Dilim : ","3",0
 secim.Getcombo "koordinat","Koordinat Sistemi : ","ITRF96",0
 secim.Getcombo "dilimorta","Dilim Orta Meridyeni : ","27|30|33|36|39|42|45",3
 if secim.showmodal then
 
 set cr = .newc(0,0,0)
-while .SelectPoint("Herhangi Bir Nokta Seç",cr,-1)
-'Değişmeyen Sabit
-pi=3.141592654 'Yaklaşık en doğru sonuca bu şekilde ulaştım
+while .SelectPoint("Herhangi Bir Nokta SeÃ§",cr,-1)
+'DeÄŸiÅŸmeyen Sabit
+pi=3.141592654 'YaklaÅŸÄ±k en doÄŸru sonuca bu ÅŸekilde ulaÅŸtÄ±m
 
-'dom ayarlaması
+'dom ayarlamasÄ±
 if secim.ValueByName("dilimorta")=0 then
 dom3=27
 ElseIf secim.ValueByName("dilimorta")=1 then
@@ -55,35 +55,35 @@ end if
 x3=CDbl(cr.x)
 y3=CDbl(cr.y)
 
-'Sabit Değerler ITRF96(GRS80)-ED50(HAYFORD) için
+'Sabit DeÄŸerler ITRF96(GRS80)-ED50(HAYFORD) iÃ§in
 if secim.ValueByName("koordinat")=0 then
-'ITRF96 GRS80 Dönüşüm Parametreleri
+'ITRF96 GRS80 DÃ¶nÃ¼ÅŸÃ¼m Parametreleri
 a=6378137
 b=6356752.31410
 else
-'ED50 HAYFORD Dönüşüm Parametreleri
+'ED50 HAYFORD DÃ¶nÃ¼ÅŸÃ¼m Parametreleri
 a=6378388
 b=6356911.9
 end if
 
-'Seçilen Dilime Göre k0 ayarlanır
+'SeÃ§ilen Dilime GÃ¶re k0 ayarlanÄ±r
 if secim.ValueByName("dilim")=0 then
-k0=0.9996 '3 Derece için
-'3 Derecelik sistemdeki koordinatlar 6 Derecelik sisteme çevrilir
+k0=0.9996 '3 Derece iÃ§in
+'3 Derecelik sistemdeki koordinatlar 6 Derecelik sisteme Ã§evrilir
 dom6=(((dom3+3)/6)+30)
 y6=(y3-500000)*k0+500000
 x6=(x3*k0)
 else
-k0=1 '6 Derece için
+k0=1 '6 Derece iÃ§in
 dom6=dom3
 y6=y3
 x6=x3
 end if
 
-'Hesaplama kısmı
-'Bu kısımda ufak tefek hatalarım olmuş olabilir.
-'Açıkçası işimi görecek kadar doğruluk yeterli olduğu için görmezden geliyorum şimdilik. 
-'36 için sonuçlar gayet iyi diğer domlar için test etme şansım olmadı o kısımlar size ait.
+'Hesaplama kÄ±smÄ±
+'Bu kÄ±sÄ±mda ufak tefek hatalarÄ±m olmuÅŸ olabilir.
+'AÃ§Ä±kÃ§asÄ± iÅŸimi gÃ¶recek kadar doÄŸruluk yeterli olduÄŸu iÃ§in gÃ¶rmezden geliyorum ÅŸimdilik. 
+'36 iÃ§in sonuÃ§lar gayet iyi diÄŸer domlar iÃ§in test etme ÅŸansÄ±m olmadÄ± o kÄ±sÄ±mlar size ait.
 f=(a-b)/a
 f1=1/f
 e=sqr(1-(b/a)*(b/a))
@@ -115,11 +115,11 @@ deltalong=(lofact1-lofact2+lofact3)/(Cos(phi))
 zoneDOM=6*dom6-183
 rawEnlem=180*(phi-fact1*(fact2+fact3+fact4))/pi
 
-'Tüm hesaplamalara göre enlem ve boylam hesaplanır
+'TÃ¼m hesaplamalara gÃ¶re enlem ve boylam hesaplanÄ±r
 enlem=rawEnlem
 boylam=zoneDOM-((deltalong*180)/pi)
 
-'Bilgisayarda tanımlı internet tarayıcısında sonuçlar açılır    
+'Bilgisayarda tanÄ±mlÄ± internet tarayÄ±cÄ±sÄ±nda sonuÃ§lar aÃ§Ä±lÄ±r    
 url="https://parselsorgu.tkgm.gov.tr/#ara/cografi/"&Cstr(enlem)&"/"&Cstr(boylam)
 set objShell = CreateObject("WScript.Shell")
 objShell.run(url)  		  
